@@ -58,7 +58,7 @@ class _ToDoHomeState extends State<ToDoHome> {
                 clipBehavior: Clip.antiAlias,
                 child: VStack(
                   [
-                    "Thinks To Do".text.black.size(40).make().p8(),
+                    "Things To Do".text.black.size(40).make().p8(),
                     SizedBox(height: 10),
                     ""
                         .text
