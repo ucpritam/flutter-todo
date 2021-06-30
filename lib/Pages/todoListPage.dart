@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sqflitecurd/Pages/addTaskPage.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class ToDoHome extends StatefulWidget {
@@ -39,9 +40,11 @@ class _ToDoHomeState extends State<ToDoHome> {
           size: 30,
         ),
         backgroundColor: Theme.of(context).accentColor,
-        onPressed: () {
-          "Tapped".text.make();
-        },
+        onPressed: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => AddToDo(),
+            )),
       ),
       body: ListView.builder(
         padding: EdgeInsets.symmetric(vertical: 60),
@@ -50,18 +53,23 @@ class _ToDoHomeState extends State<ToDoHome> {
           if (index == 0) {
             return Padding(
               padding: EdgeInsets.symmetric(horizontal: 25, vertical: 25 / 2),
-              child: VStack(
-                [
-                  "Thinks To Do".text.black.size(40).make(),
-                  SizedBox(height: 10),
-                  ""
-                      .text
-                      .gray700
-                      .size(20)
-                      .fontWeight(FontWeight.w600)
-                      .make(),
-                ],
-                crossAlignment: CrossAxisAlignment.start,
+              child: Card(
+                elevation: 2,
+                clipBehavior: Clip.antiAlias,
+                child: VStack(
+                  [
+                    "Thinks To Do".text.black.size(40).make().p8(),
+                    SizedBox(height: 10),
+                    ""
+                        .text
+                        .gray700
+                        .size(20)
+                        .fontWeight(FontWeight.w600)
+                        .make()
+                        .p8(),
+                  ],
+                  crossAlignment: CrossAxisAlignment.start,
+                ),
               ),
             );
           }
