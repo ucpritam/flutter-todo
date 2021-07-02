@@ -9,20 +9,12 @@ class DatabaseResource {
 
   DatabaseResource._instance();
 
-/*
-ToDo table
-ID  Title  Date  Importance  status
-0    ""     ""       ""         0
-1    ""     ""       ""         0
-2    ""     ""       ""         0
- */
-
-  String toDoTable = "todo_Task_Table";
+  String toDoTable = "todoTaskTable";
   String columnId = "id";
-  String columnTitle = "Title";
+  String columnTitle = "title";
   String columnDate = "date";
-  String columnPriority = "priority";
-  String columnstatus = "status";
+  String columnPriorty = "priorty";
+  String columnStatus = "status";
 
   Future<Database> get db async {
     if (_db == null) {
@@ -41,7 +33,7 @@ ID  Title  Date  Importance  status
 
   void _createDb(Database db, int version) async {
     await db.execute(
-      "Create TODO Table $toDoTable($columnId INTEGER PRIMARY KEY AUTOINCREMENT, $columnTitle TEXT, $columnDate Text, $columnPriority TEXT, $columnstatus INTEGER)",
+      "CREATE TABLE $toDoTable($columnId INTEGER PRIMARY KEY AUTOINCREMENT, $columnTitle TEXT, $columnDate Text, $columnPriorty TEXT, $columnStatus INTEGER)",
     );
   }
 
@@ -57,6 +49,7 @@ ID  Title  Date  Importance  status
     taskMapList.forEach((taskMap) {
       taskList.add(Task.fromMap(taskMap));
     });
+    taskList.sort((taskA, taskB) => taskA.date.compareTo(taskB.date));
     return taskList;
   }
 

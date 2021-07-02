@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:sqflitecurd/Resources/database.dart';
+import 'package:sqflitecurd/models/taskModels.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:intl/intl.dart';
 
-class AddToDo extends StatefulWidget {
+class AddToDoPage extends StatefulWidget {
+  final Function updateTaskList;
+  final Task task;
+  AddToDoPage({this.updateTaskList, this.task});
+
   @override
-  _AddToDoState createState() => _AddToDoState();
+  _AddToDoPageState createState() => _AddToDoPageState();
 }
 
-class _AddToDoState extends State<AddToDo> {
+class _AddToDoPageState extends State<AddToDoPage> {
   final _formKey = GlobalKey<FormState>();
   String _title = "";
   String _important;
@@ -20,6 +26,12 @@ class _AddToDoState extends State<AddToDo> {
   @override
   void initState() {
     super.initState();
+
+    if (widget.task != null) {
+      _title = widget.task.title;
+      _date = widget.task.date;
+      _important = widget.task.priorty;
+    }
     _dateController.text = _dateFormatter.format(_date);
   }
 
@@ -49,8 +61,24 @@ class _AddToDoState extends State<AddToDo> {
       _formKey.currentState.save();
       print("$_title,$_date,$_important");
       //Update Todo List Page
+      Task task = Task(title: _title, date: _date, priorty: _important);
+      if (widget.task == null) {
+        task.status = 0;
+        DatabaseResource.instance.insertTask(task);
+      } else {
+        task.id = widget.task.id;
+        task.status = widget.task.status;
+        DatabaseResource.instance.updateTask(task);
+      }
+      widget.updateTaskList();
       Navigator.pop(context);
     }
+  }
+
+  void deleteToDo() {
+    DatabaseResource.instance.deleteTask(widget.task.id);
+    widget.updateTaskList();
+    Navigator.pop(context);
   }
 
   @override
@@ -68,13 +96,21 @@ class _AddToDoState extends State<AddToDo> {
                   child: Icon(
                     Icons.arrow_back_ios,
                     size: 30,
-                    color: Theme.of(context).accentColor,
+                    color: widget.task == null
+                        ? Theme.of(context).accentColor
+                        : Theme.of(context).primaryColorDark,
                   ),
                 ),
                 SizedBox(
                   height: 10,
                 ),
-                "Add ToDos".text.bold.size(40).make(),
+                Text(
+                  widget.task == null ? " Add ToDo" : "Update ToDo",
+                  style: TextStyle(
+                    fontSize: 40,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 SizedBox(height: 10),
                 Form(
                   key: _formKey,
@@ -121,11 +157,17 @@ class _AddToDoState extends State<AddToDo> {
                           Icons.arrow_drop_down_circle_rounded,
                         ),
                         iconSize: 22,
-                        iconEnabledColor: Theme.of(context).primaryColor,
+                        iconEnabledColor: widget.task == null
+                            ? Theme.of(context).accentColor
+                            : Theme.of(context).primaryColor,
                         items: _importance.map((String _important) {
                           return DropdownMenuItem(
                             value: _important,
-                            child: _important.text.black.size(18).make(),
+                            child: Text("$_important",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.black,
+                                )),
                           );
                         }).toList(),
                         style: TextStyle(fontSize: 18),
@@ -152,12 +194,38 @@ class _AddToDoState extends State<AddToDo> {
                   height: 60,
                   width: double.infinity,
                   decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColor,
+                      color: widget.task == null
+                          ? Theme.of(context).accentColor
+                          : Theme.of(context).primaryColor,
                       borderRadius: BorderRadius.circular(30)),
                   child: TextButton(
-                      onPressed: _addTodo,
-                      child: "Add".text.white.size(20).makeCentered()),
+                    onPressed: _addTodo,
+                    child: Text(
+                      widget.task == null ? "Add" : "Update",
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
                 ),
+                widget.task != null
+                    ? Container(
+                        margin: EdgeInsets.symmetric(vertical: 20),
+                        height: 60,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                            color: Theme.of(context).primaryColorDark,
+                            borderRadius: BorderRadius.circular(30)),
+                        child: TextButton(
+                            onPressed: deleteToDo,
+                            child: Text(
+                              "Delete",
+                              style:
+                                  TextStyle(fontSize: 20, color: Colors.white),
+                            )),
+                      )
+                    : SizedBox.shrink(),
               ],
               crossAlignment: CrossAxisAlignment.start,
             ),

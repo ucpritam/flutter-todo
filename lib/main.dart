@@ -13,7 +13,10 @@ class MyApp extends StatelessWidget {
       title: 'ToDo List',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.amber,
+        accentColor: Colors.amber,
+        primaryColor: Colors.green,
+        primaryColorDark: Colors.redAccent,
+        backgroundColor: Colors.white,
       ),
       home: ToDoHome(),
     );
