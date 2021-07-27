@@ -4,7 +4,6 @@ import 'package:sqflitecurd/Pages/addTaskPage.dart';
 import 'package:sqflitecurd/Resources/database.dart';
 import 'package:sqflitecurd/models/taskModels.dart';
 import 'package:velocity_x/velocity_x.dart';
-import 'package:async/async.dart';
 
 class ToDoHome extends StatefulWidget {
   @override
@@ -45,8 +44,8 @@ class _ToDoHomeState extends State<ToDoHome> {
               style: TextStyle(
                 fontSize: 18,
                 decoration: task.status == 0
-                    ? TextDecoration.underline
-                    : TextDecoration.none,
+                    ? TextDecoration.none
+                    : TextDecoration.lineThrough,
               ),
             ),
             subtitle: Text(
@@ -59,14 +58,6 @@ class _ToDoHomeState extends State<ToDoHome> {
               ),
             ),
             trailing: HStack([
-              GestureDetector(
-                onTap: () => deleteToDo,
-                child: Icon(
-                  Icons.delete_forever,
-                  size: 30,
-                  color: Colors.redAccent,
-                ),
-              ),
               Checkbox(
                 onChanged: (value) {
                   task.status = value ? 1 : 0;

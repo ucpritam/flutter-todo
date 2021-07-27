@@ -59,7 +59,7 @@ class _AddToDoPageState extends State<AddToDoPage> {
   _addTodo() {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
-      print("$_title,$_date,$_important");
+      print("title: $_title,date :$_date,important : $_important");
       //Update Todo List Page
       Task task = Task(title: _title, date: _date, priorty: _important);
       if (widget.task == null) {

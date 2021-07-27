@@ -1,4 +1,4 @@
-package com.example.sqflitecurd
+package com.example.sqflitecurdtodo
 
 import io.flutter.embedding.android.FlutterActivity
 
