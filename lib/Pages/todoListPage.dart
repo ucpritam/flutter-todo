@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:sqflitecurd/Pages/addTaskPage.dart';
 import 'package:sqflitecurd/Resources/database.dart';
 import 'package:sqflitecurd/models/taskModels.dart';
@@ -12,7 +11,6 @@ class ToDoHome extends StatefulWidget {
 
 class _ToDoHomeState extends State<ToDoHome> {
   Future<List<Task>> _taskList;
-  final DateFormat _dateFormatter = DateFormat("MMM dd, yy");
 
   @override
   void initState() {
@@ -25,12 +23,6 @@ class _ToDoHomeState extends State<ToDoHome> {
       _taskList = DatabaseResource.instance.getTaskList();
     });
   }
-
-  // _deleteToDo() {
-  //   DatabaseResource.instance.deleteTask(widget.task.id);
-  //   widget.updateTaskList();
-  //   Navigator.pop(context);
-  // }
 
   Widget _buildTasks(Task task) {
     return Padding(
@@ -46,15 +38,6 @@ class _ToDoHomeState extends State<ToDoHome> {
                 decoration: task.status == 0
                     ? TextDecoration.none
                     : TextDecoration.lineThrough,
-              ),
-            ),
-            subtitle: Text(
-              "${_dateFormatter.format(task.date)} • ${task.priorty}",
-              style: TextStyle(
-                fontSize: 14,
-                decoration: task.status == 0
-                    ? TextDecoration.underline
-                    : TextDecoration.none,
               ),
             ),
             trailing: HStack([
@@ -78,9 +61,6 @@ class _ToDoHomeState extends State<ToDoHome> {
                 )),
           ),
         ),
-        Divider(
-          color: Theme.of(context).primaryColorDark,
-        )
       ]),
     );
   }
@@ -88,6 +68,10 @@ class _ToDoHomeState extends State<ToDoHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('To Do'),
+        backgroundColor: Theme.of(context).primaryColor,
+      ),
       floatingActionButton: FloatingActionButton(
         child: Icon(
           Icons.add,
@@ -115,13 +99,7 @@ class _ToDoHomeState extends State<ToDoHome> {
             );
           }
 
-          final int completedTaskCount = snapshot.data
-              .where((Task task) => task.status == 1)
-              .toList()
-              .length;
-
           return ListView.builder(
-            padding: EdgeInsets.symmetric(vertical: 60),
             itemCount: 1 + snapshot.data.length,
             itemBuilder: (BuildContext context, int index) {
               if (index == 0) {
@@ -131,20 +109,6 @@ class _ToDoHomeState extends State<ToDoHome> {
                   child: Card(
                     elevation: 2,
                     clipBehavior: Clip.antiAlias,
-                    child: VStack(
-                      [
-                        "Things To Do".text.black.size(40).make().p8(),
-                        SizedBox(height: 10),
-                        "$completedTaskCount of ${snapshot.data.length}"
-                            .text
-                            .gray700
-                            .size(20)
-                            .fontWeight(FontWeight.w600)
-                            .make()
-                            .p8(),
-                      ],
-                      crossAlignment: CrossAxisAlignment.start,
-                    ),
                   ),
                 );
               }

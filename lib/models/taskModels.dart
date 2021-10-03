@@ -1,20 +1,14 @@
 class Task {
   int id;
   String title;
-  DateTime date;
-  String priorty;
-  int status; //(0 -> incomplete ; 1 -> complete;)
+  int status;
 
   Task({
-    this.date,
-    this.priorty,
     this.status,
     this.title,
   });
   Task.withId({
     this.id,
-    this.date,
-    this.priorty,
     this.status,
     this.title,
   });
@@ -25,8 +19,7 @@ class Task {
       map["id"] = id;
     }
     map["title"] = title;
-    map["date"] = date.toIso8601String();
-    map["priorty"] = priorty;
+
     map["status"] = status;
     return map;
   }
@@ -35,8 +28,6 @@ class Task {
     return Task.withId(
       id: map["id"],
       title: map["title"],
-      date: DateTime.parse(map["date"]),
-      priorty: map["priorty"],
       status: map["status"],
     );
   }

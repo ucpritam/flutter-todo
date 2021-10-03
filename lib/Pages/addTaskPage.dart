@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:sqflitecurd/Resources/database.dart';
 import 'package:sqflitecurd/models/taskModels.dart';
 import 'package:velocity_x/velocity_x.dart';
-import 'package:intl/intl.dart';
 
 class AddToDoPage extends StatefulWidget {
   final Function updateTaskList;
@@ -16,12 +15,6 @@ class AddToDoPage extends StatefulWidget {
 class _AddToDoPageState extends State<AddToDoPage> {
   final _formKey = GlobalKey<FormState>();
   String _title = "";
-  String _important;
-  DateTime _date = DateTime.now();
-  TextEditingController _dateController = TextEditingController();
-
-  final DateFormat _dateFormatter = DateFormat("MMM dd, yy");
-  final List<String> _importance = ["Low", "Medium", "High"];
 
   @override
   void initState() {
@@ -29,39 +22,19 @@ class _AddToDoPageState extends State<AddToDoPage> {
 
     if (widget.task != null) {
       _title = widget.task.title;
-      _date = widget.task.date;
-      _important = widget.task.priorty;
     }
-    _dateController.text = _dateFormatter.format(_date);
   }
 
   @override
   void dispose() {
     super.dispose();
-    _dateController.dispose();
-  }
-
-  _handleDatePicker() async {
-    final DateTime date = await showDatePicker(
-      context: context,
-      initialDate: _date,
-      firstDate: DateTime.now(),
-      lastDate: DateTime(2100),
-    );
-    if (date != null && date != _date) {
-      setState(() {
-        _date = date;
-      });
-      _dateController.text = _dateFormatter.format(date);
-    }
   }
 
   _addTodo() {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
-      print("title: $_title,date :$_date,important : $_important");
-      //Update Todo List Page
-      Task task = Task(title: _title, date: _date, priorty: _important);
+
+      Task task = Task(title: _title);
       if (widget.task == null) {
         task.status = 0;
         DatabaseResource.instance.insertTask(task);
@@ -105,7 +78,7 @@ class _AddToDoPageState extends State<AddToDoPage> {
                   height: 10,
                 ),
                 Text(
-                  widget.task == null ? " Add ToDo" : "Update ToDo",
+                  widget.task == null ? " Add To Do" : "Update To Do",
                   style: TextStyle(
                     fontSize: 40,
                     fontWeight: FontWeight.bold,
@@ -120,7 +93,7 @@ class _AddToDoPageState extends State<AddToDoPage> {
                       child: TextFormField(
                         style: TextStyle(fontSize: 18),
                         decoration: InputDecoration(
-                          labelText: "Task Title",
+                          labelText: "Task",
                           labelStyle: TextStyle(fontSize: 18),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10.0),
@@ -133,60 +106,6 @@ class _AddToDoPageState extends State<AddToDoPage> {
                         initialValue: _title,
                       ),
                     ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: 20),
-                      child: TextFormField(
-                        readOnly: true,
-                        controller: _dateController,
-                        onTap: _handleDatePicker,
-                        style: TextStyle(fontSize: 18),
-                        decoration: InputDecoration(
-                          labelText: "Date",
-                          labelStyle: TextStyle(fontSize: 18),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: 20),
-                      child: DropdownButtonFormField(
-                        isDense: true,
-                        icon: Icon(
-                          Icons.arrow_drop_down_circle_rounded,
-                        ),
-                        iconSize: 22,
-                        iconEnabledColor: widget.task == null
-                            ? Theme.of(context).accentColor
-                            : Theme.of(context).primaryColor,
-                        items: _importance.map((String _important) {
-                          return DropdownMenuItem(
-                            value: _important,
-                            child: Text("$_important",
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  color: Colors.black,
-                                )),
-                          );
-                        }).toList(),
-                        style: TextStyle(fontSize: 18),
-                        decoration: InputDecoration(
-                          labelText: "Priority",
-                          labelStyle: TextStyle(fontSize: 18),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                        ),
-                        validator: (input) => _important == null
-                            ? "Please Select your importance level"
-                            : null,
-                        onChanged: (value) {
-                          _important = value;
-                        },
-                        value: _important,
-                      ),
-                    )
                   ]),
                 ),
                 Container(

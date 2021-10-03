@@ -12,8 +12,6 @@ class DatabaseResource {
   String toDoTable = "todoTaskTable";
   String columnId = "id";
   String columnTitle = "title";
-  String columnDate = "date";
-  String columnPriorty = "priorty";
   String columnStatus = "status";
 
   Future<Database> get db async {
@@ -33,7 +31,7 @@ class DatabaseResource {
 
   void _createDb(Database db, int version) async {
     await db.execute(
-      "CREATE TABLE $toDoTable($columnId INTEGER PRIMARY KEY AUTOINCREMENT, $columnTitle TEXT, $columnDate Text, $columnPriorty TEXT, $columnStatus INTEGER)",
+      "CREATE TABLE $toDoTable($columnId INTEGER PRIMARY KEY AUTOINCREMENT, $columnTitle TEXT, $columnStatus INTEGER)",
     );
   }
 
@@ -49,7 +47,6 @@ class DatabaseResource {
     taskMapList.forEach((taskMap) {
       taskList.add(Task.fromMap(taskMap));
     });
-    taskList.sort((taskA, taskB) => taskA.date.compareTo(taskB.date));
     return taskList;
   }
 
