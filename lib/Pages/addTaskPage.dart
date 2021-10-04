@@ -25,11 +25,6 @@ class _AddToDoPageState extends State<AddToDoPage> {
     }
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
   _addTodo() {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
